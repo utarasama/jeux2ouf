@@ -39,13 +39,16 @@ class _MemoryGameState extends State<MemoryGame> {
         builder: (context, item) {
           if (item.hasData) {
             Map? jsonMap = json.decode(item.data!);
-            List? songs = jsonMap?.keys.toList();
-            // List? songs = jsonMap?.keys.where((element) => element.endsWith(".mp3")).toList();
+            List? images = jsonMap?.keys.toList();
+            // List? images = jsonMap?.keys.where((element) => element.endsWith(".mp3")).toList();
 
-            return ListView.builder(
-              itemCount: songs?.length,
+            return GridView.builder(
+              itemCount: images?.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+              ),
               itemBuilder: (context, index) {
-                var path = songs![index].toString();
+                var path = images![index].toString();
                 var title = path.split("/").last.toString(); //get file name
                 title = title.replaceAll("%20", ""); //remove %20 characters
                 title = title.split(".").first;
@@ -61,19 +64,7 @@ class _MemoryGameState extends State<MemoryGame> {
                         width: 1.0,
                         style: BorderStyle.solid),
                   ),
-                  child: ListTile(
-                    textColor: Colors.black,
-                    title: Text(title),
-                    subtitle: Text(
-                      "path: $path",
-                      style: const TextStyle(color: Colors.black, fontSize: 12),
-                    ),
-                    leading: const Icon(
-                      Icons.image,
-                      size: 20,
-                      color: Colors.black,
-                    ),
-                  ),
+                  child: Image.asset(path, fit: BoxFit.cover),
                 );
               },
             );
