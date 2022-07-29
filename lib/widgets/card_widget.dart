@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:observer/observer.dart';
 
-class CardWidget extends StatefulWidget {
-  final String imageRecto;
+class CardWidget extends StatefulWidget with Observable {
+  final String image;
 
-  const CardWidget({Key? key, required this.imageRecto}) : super(key: key);
+  CardWidget({Key? key, required this.image}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _CardState();
 }
 
-class _CardState extends State<CardWidget> {
+class _CardState extends State<CardWidget> with Observable {
   bool flipped = false;
   String imageDisplayed = "";
   String imageVerso = "image_verso.png";
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
     imageDisplayed = imageVerso;
   }
 
@@ -27,9 +26,11 @@ class _CardState extends State<CardWidget> {
       if (flipped) {
         flipped = false;
         imageDisplayed = imageVerso;
+        notifyObservers(this);
       } else {
         flipped = true;
-        imageDisplayed = widget.imageRecto;
+        imageDisplayed = widget.image;
+        notifyObservers(this);
       }
     });
   }
