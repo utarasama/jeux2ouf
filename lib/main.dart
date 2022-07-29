@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       initialRoute: '/',
+      debugShowCheckedModeBanner: false,
       routes: {
         '/memory': (context) => const MemoryGame(),
         //'/formation': (context) => const Formation(),

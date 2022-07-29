@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'dart:convert';
+import 'widgets/card_widget.dart';
 
 class MemoryGame extends StatefulWidget {
   const MemoryGame({Key? key}) : super(key: key);
@@ -32,7 +33,7 @@ class _MemoryGameState extends State<MemoryGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Jeux2ouf'),
+        title: const Text('Memory cards'),
       ),
       body: FutureBuilder<String>(
         future: DefaultAssetBundle.of(context).loadString('AssetManifest.json'),
@@ -61,19 +62,7 @@ class _MemoryGameState extends State<MemoryGame> {
                 title = title.replaceAll("%20", ""); //remove %20 characters
                 title = title.split(".").first;
 
-                return Container(
-                  margin:
-                      const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
-                  padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.0),
-                    border: Border.all(
-                        color: Colors.black,
-                        width: 1.0,
-                        style: BorderStyle.solid),
-                  ),
-                  child: Image.asset(path, fit: BoxFit.cover),
-                );
+                return CardWidget(imageRecto: path);
               },
             );
           } else {
