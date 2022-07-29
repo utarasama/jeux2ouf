@@ -39,16 +39,24 @@ class _MemoryGameState extends State<MemoryGame> {
         builder: (context, item) {
           if (item.hasData) {
             Map? jsonMap = json.decode(item.data!);
-            List? images = jsonMap?.keys.toList();
+            List? images = jsonMap?.keys.where((image) => image.contains("memory_cards")).toList();
             // List? images = jsonMap?.keys.where((element) => element.endsWith(".mp3")).toList();
-
+            var randomImages = images!.sample(10);
+            print("Sélection 1 : $randomImages");
+            List? doubleRandomImages = List.empty(growable: true);
+            for (var randomImage in randomImages) {
+              doubleRandomImages.add(randomImage);
+              doubleRandomImages.add(randomImage);
+            }
+            doubleRandomImages.shuffle();
+            print("Sélection 2 : $doubleRandomImages");
             return GridView.builder(
-              itemCount: images?.length,
+              itemCount: doubleRandomImages?.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
               ),
               itemBuilder: (context, index) {
-                var path = images![index].toString();
+                var path = doubleRandomImages![index].toString();
                 var title = path.split("/").last.toString(); //get file name
                 title = title.replaceAll("%20", ""); //remove %20 characters
                 title = title.split(".").first;
