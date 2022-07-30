@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:observer/observer.dart';
 
-class CardWidget extends StatefulWidget with Observable {
-  final String image;
+class CardWidget extends StatefulWidget {
+  String image;
+  CardObservable observable = CardObservable();
 
   CardWidget({Key? key, required this.image}) : super(key: key);
 
@@ -10,7 +11,7 @@ class CardWidget extends StatefulWidget with Observable {
   State<StatefulWidget> createState() => _CardState();
 }
 
-class _CardState extends State<CardWidget> with Observable {
+class _CardState extends State<CardWidget> {
   bool flipped = false;
   String imageDisplayed = "";
   String imageVerso = "image_verso.png";
@@ -21,25 +22,24 @@ class _CardState extends State<CardWidget> with Observable {
     imageDisplayed = imageVerso;
   }
 
-  void toggleFlip() {
+  void toggleFlipped() {
     setState(() {
       if (flipped) {
         flipped = false;
         imageDisplayed = imageVerso;
-        notifyObservers(this);
       } else {
         flipped = true;
         imageDisplayed = widget.image;
-        notifyObservers(this);
       }
     });
+    widget.observable.setObserver(imageDisplayed);
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        toggleFlip();
+        toggleFlipped();
       },
       child: Container(
         margin: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
@@ -47,12 +47,16 @@ class _CardState extends State<CardWidget> with Observable {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4.0),
           border: Border.all(
-              color: Colors.black,
-              width: 1.0,
-              style: BorderStyle.solid),
+              color: Colors.black, width: 1.0, style: BorderStyle.solid),
         ),
         child: Image.asset(imageDisplayed, fit: BoxFit.cover),
       ),
     );
+  }
+}
+
+class CardObservable with Observable {
+  void setObserver(String value) {
+    notifyObservers(value);
   }
 }

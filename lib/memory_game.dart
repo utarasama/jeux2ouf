@@ -11,39 +11,15 @@ class MemoryGame extends StatefulWidget {
   State<MemoryGame> createState() => _MemoryGameState();
 }
 
-class _MemoryGameState extends State<MemoryGame> with Observer {
-  List<CardWidget> cardsFlipped = List.empty();
-
+class _MemoryGameState extends State<MemoryGame> {
   @override
   void initState() {
     super.initState();
   }
 
-  //updates gets called when observable gets observed and observable notifies
-  @override
-  void update(Observable observable, Object arg) {
-    //check which observable called update
-    switch (observable.runtimeType) {
-      case CardWidget:
-        var value = arg as CardWidget;
-        cardsFlipped.add(value);
-        if (cardsFlipped.length >= 2 && cardsFlipped[0].image == cardsFlipped[1].image) {
-          Future.delayed(const Duration(seconds: 1), (){
-            print("Executed after 5 seconds");
-          });
-          final resetObservable = ResetObservable();
-          resetObservable.notifyObservers(0);
-        }
-        break;
-      case ResetObservable:
-        print("reset is heeeere truc2Ouf");
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final observer = _MemoryGameState();
+    final observer = CardObserver([]);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Memory cards'),
@@ -53,7 +29,9 @@ class _MemoryGameState extends State<MemoryGame> with Observer {
         builder: (context, item) {
           if (item.hasData) {
             Map? jsonMap = json.decode(item.data!);
-            List? images = jsonMap?.keys.where((image) => image.contains("memory_cards")).toList();
+            List? images = jsonMap?.keys
+                .where((image) => image.contains("memory_cards"))
+                .toList();
             // List? images = jsonMap?.keys.where((element) => element.endsWith(".mp3")).toList();
             var randomImages = images!.sample(10);
             // print("Sélection 1 : $randomImages");
@@ -65,14 +43,14 @@ class _MemoryGameState extends State<MemoryGame> with Observer {
             doubleRandomImages.shuffle();
             // print("Sélection 2 : $doubleRandomImages");
             return GridView.builder(
-              itemCount: doubleRandomImages?.length,
+              itemCount: doubleRandomImages.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
               ),
               itemBuilder: (context, index) {
-                var path = doubleRandomImages![index].toString();
+                var path = doubleRandomImages[index].toString();
                 var observableCard = CardWidget(image: path);
-                observableCard.addObserver(observer);
+                observableCard.observable.addObserver(observer);
                 return observableCard;
               },
             );
@@ -87,4 +65,40 @@ class _MemoryGameState extends State<MemoryGame> with Observer {
   }
 }
 
-class ResetObservable with Observable {}
+// class ResetObservable with Observable {}
+
+class CardObserver with Observer {
+  List<String> cardsFlipped;
+
+  CardObserver(this.cardsFlipped);
+
+  //updates gets called when observable gets observed and observable notifies
+  @override
+  void update(Observable observable, Object arg) {
+    //check which observable called update
+    switch (observable.runtimeType) {
+      case CardObservable:
+        String value = arg as String;
+        cardsFlipped.add(value);
+        if (cardsFlipped.length >= 2) {
+          if (cardsFlipped[0] == cardsFlipped[1]) {
+            cardsFlipped.clear();
+          } else {}
+          Future.delayed(const Duration(seconds: 1), () {
+            print("Executed after 5 seconds");
+          });
+          /*
+          final resetObservable = ResetObservable();
+          resetObservable.notifyObservers(0);
+          */
+          cardsFlipped.clear();
+        }
+        break;
+      /*
+      case ResetObservable:
+        print("reset is heeeere truc2Ouf");
+        break;
+        */
+    }
+  }
+}
