@@ -19,14 +19,14 @@ class _CardState extends State<CardWidget> {
   @override
   void initState() {
     super.initState();
+    flipped = false;
     imageDisplayed = imageVerso;
   }
 
   void toggleFlipped() {
     setState(() {
       if (flipped) {
-        flipped = false;
-        imageDisplayed = imageVerso;
+        initState();
       } else {
         flipped = true;
         imageDisplayed = widget.image;

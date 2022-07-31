@@ -82,7 +82,6 @@ class CardObserver with Observer {
         cardsFlipped.add(value);
         if (cardsFlipped.length >= 2) {
           if (cardsFlipped[0] == cardsFlipped[1]) {
-            cardsFlipped.clear();
           } else {}
           Future.delayed(const Duration(seconds: 1), () {
             print("Executed after 5 seconds");
