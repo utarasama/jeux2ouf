@@ -4,13 +4,12 @@ node {
         checkout scm
      }
      stage ('Build images'){
-        app = docker.build("tag1/image")
+        app = docker.build("tag1/httpd")
      }
      stage ('Test image'){
-        docker.image("tag/image").WithRun('-p 80:80'){
-            c ->
-            sh 'docker ps'
-            curl 'localhost'
-            }
+        withDockerContainer("tag1/httpd"){ 
+            sh "echo 'hello world'" 
+        }
+        sh "docker ps"
      }
 }
