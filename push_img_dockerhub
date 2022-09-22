@@ -1,0 +1,34 @@
+pipeline{
+     agent any
+     environment {
+            DOCKERHUB_CREDENTIALS=credentials('1') // ID Identifiants globaux créer dans Jenkins
+      }
+      stages {
+            stage('git clone') {
+                 steps {
+                      git branch: 'master', url: 'https://github.com/utarasama/jeux2ouf/'
+                    }
+                 }
+              stage('build') {
+                      steps {
+                         sh 'docker build -t  utarasama/exo_jeudi:build_docker_jenkins . '
+                    }
+                 }
+             stage('login') {
+                      steps {
+                         sh 'echo $DOCKERHUB_CREDENTIALS_PSW  | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                    }
+                 }
+            stage('push') {
+                 steps {
+                      sh 'docker push utarasama/exo_jeudi:build_docker_jenkins'
+                    }
+                  }
+                }
+
+            post {
+                always {
+                      sh 'docker logout'
+                   }
+                 }
+}
