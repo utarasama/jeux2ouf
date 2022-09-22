@@ -1,7 +1,7 @@
 pipeline{
      agent any
      environment {
-            DOCKERHUB_CREDENTIALS=credentials('1') // ID Identifiants globaux créer dans Jenkins
+            DOCKERHUB_CREDENTIALS=credentials('002')
       }
       stages {
             stage('git clone') {
