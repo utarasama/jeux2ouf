@@ -9,7 +9,7 @@ node {
      stage ('Test image'){
         withDockerContainer("tag1/httpd"){ 
             sh "echo 'hello world'" 
-        }
-        sh "docker ps"
-     }
+            }
+            sh "docker ps"
+            }
 }
